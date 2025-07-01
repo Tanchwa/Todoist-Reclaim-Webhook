@@ -13,7 +13,7 @@ def check_sha256sum():
     sha256sum_header = request.headers.get('X-Todoist-Hmac-SHA256')
 
     request_body = request.get_data
-    digest = hmac.new(todoist_key, msg=request_body, digestmod=hashlib.sha256).digest()
+    digest = hmac.new(todoist_key, request_body, digestmod=hashlib.sha256).digest()
     signature = base64.b64encode(digest).decode()
 
     if sha256sum_header != signature:
