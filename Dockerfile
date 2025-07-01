@@ -1,6 +1,6 @@
 FROM python:3.13.5-alpine
 
-COPY requirements.text .
+COPY ./requirements.text .
 RUN python3 -m pip install -r requirements.text
 
 WORKDIR /app
