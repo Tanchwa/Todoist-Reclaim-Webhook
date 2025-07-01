@@ -10,4 +10,4 @@ COPY ./api/* /app
 RUN adduser -u 5678 --disabled-password appuser && chown -R appuser /app
 USER appuser
 
-ENTRYPOINT ["python3","-m","flask","--app","main","run"]
+ENTRYPOINT ["python3","-m","flask","--app","main","run","--host=0.0.0.0"]
