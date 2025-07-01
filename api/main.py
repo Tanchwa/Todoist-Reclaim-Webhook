@@ -20,4 +20,5 @@ def check_sha256sum():
         abort(401, description="Unable to verify integrity of incomming request")
 
     else:
+        print(request.json)
         return Response(status=200)
