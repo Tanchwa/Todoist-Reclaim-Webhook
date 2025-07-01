@@ -1,7 +1,8 @@
 FROM python:3.13.5-alpine
 
-COPY ./requirements.text .
-RUN python3 -m pip install -r requirements.text
+
+COPY requirements.txt .
+RUN python3 -m pip install -r requirements.txt
 
 WORKDIR /app
 COPY ./api/* /app
