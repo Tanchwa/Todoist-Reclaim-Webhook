@@ -66,8 +66,11 @@ def accept_webhook_request():
                 task.event_color = EventColor.TANGERINE
                 task.time_scheme_id = Hours.list()[1].id ## should be personal hours
                 task.save()
-            else:
-                return
+            else: #default to personal
+                task.event_color = EventColor.TANGERINE
+                task.time_scheme_id = Hours.list()[1].id ## should be personal hours
+                task.save()
+                
 
             task.up_next
             task.save()
