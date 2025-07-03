@@ -61,7 +61,7 @@ def accept_webhook_request():
             label = (event_data.get("labels") or [None])[0]
             hour_ids = {h.title: h.id for h in Hours.list()}
             working  = hour_ids.get("Working Hours")
-            personal = hour_ids.get("Personal")
+            personal = hour_ids.get("Personal Hours")
 
             if label == "reclaim":
                 task.event_color   = EventColor.LAVENDER
