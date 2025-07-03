@@ -48,33 +48,29 @@ def accept_webhook_request():
                     priority = TaskPriority.P3,
             )
 
-            task.duration = 0.5 #will change this to be set dynamically with the AI interpriteation
-            task.max_work_duration = 1.5
-            task.min_work_duration = 0.5
-
-            task.notes = (
-                f" Event Created By Tanchwa's Todoist: \n{event_data['url']}"
+            task.notes              = (
+                " Event Created By Tanchwa's Todoist: \n"
+                f"{event_data['url']}"
             )
-            task.event_color = EventColor.LAVENDER
+            task.duration           = 0.5
+            task.max_work_duration  = 1.5
+            task.min_work_duration  = 0.5
+            task.up_next            = True
 
-            if event_data["labels"][0] == "reclaim":
-                
-                task.event_color = EventColor.LAVENDER
-                task.time_scheme_id = Hours.list()[2].id ## should be working hours
-            elif event_data["labels"][0] == "reclaim_personal":
-                task.event_color = EventColor.TANGERINE
-                task.time_scheme_id = Hours.list()[1].id ## should be personal hours
-            else: #default to personal
-                task.event_color = EventColor.TANGERINE
-                task.time_scheme_id = Hours.list()[1].id ## should be personal hours
-                
+            # colour / time‑scheme
+            label = (event_data.get("labels") or [None])[0]
+            hour_ids = {h.title: h.id for h in Hours.list()}
+            working  = hour_ids.get("Working Hours")
+            personal = hour_ids.get("Personal")
 
-            task.up_next = True
+            if label == "reclaim":
+                task.event_color   = EventColor.LAVENDER
+                task.time_scheme_id = working
+            else:  # default & "reclaim_personal"
+                task.event_color   = EventColor.TANGERINE
+                task.time_scheme_id = personal
 
             task.save()
-            task.start()
-            task.mark_incomplete()
-
 
         except RecordNotFound as e:
             print(f"Record not found: {e}")
