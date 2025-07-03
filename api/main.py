@@ -29,7 +29,7 @@ def accept_webhook_request():
     digest = hmac.new(todoist_key, request_body, digestmod=hashlib.sha256).digest()
     signature = base64.b64encode(digest).decode()
 
-    if sha256sum_header != signature:
+    if not hmac.compare_digest(sha256sum_header, signature)
         abort(401, description="Unable to verify integrity of incomming request")
 
     else:
@@ -48,39 +48,33 @@ def accept_webhook_request():
                     priority = TaskPriority.P3,
             )
 
-            task.durration = 0.5 #will change this to be set dynamically with the AI interpriteation
+            task.duration = 0.5 #will change this to be set dynamically with the AI interpriteation
             task.max_work_duration = 1.5
             task.min_work_duration = 0.5
-            task.save()
 
-            task.notes = f" Event Created By Tanchwa's Todoist: \n{event_data["url"]}"
+            task.notes = (
+                f" Event Created By Tanchwa's Todoist: \n{event_data['url']}"
+            )
             task.event_color = EventColor.LAVENDER
-            task.save()
 
             if event_data["labels"][0] == "reclaim":
                 
                 task.event_color = EventColor.LAVENDER
                 task.time_scheme_id = Hours.list()[2].id ## should be working hours
-                task.save()
             elif event_data["labels"][0] == "reclaim_personal":
                 task.event_color = EventColor.TANGERINE
                 task.time_scheme_id = Hours.list()[1].id ## should be personal hours
-                task.save()
             else: #default to personal
                 task.event_color = EventColor.TANGERINE
                 task.time_scheme_id = Hours.list()[1].id ## should be personal hours
-                task.save()
                 
 
             task.up_next = True
+
             task.save()
-
             task.start()
-
             task.mark_incomplete()
 
-            all_tasks = Task.list()
-            print(all_tasks)
 
         except RecordNotFound as e:
             print(f"Record not found: {e}")
