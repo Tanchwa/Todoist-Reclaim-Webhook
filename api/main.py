@@ -67,7 +67,7 @@ def check_sha256sum():
                 task.time_scheme_id = Hours.list()[1].id ## should be personal hours
                 task.save()
             else:
-                pass
+                return
 
             task.up_next
             task.save()
