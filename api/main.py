@@ -37,9 +37,9 @@ def check_sha256sum():
         event_data = todoist_task["event_data"]
         try:
             task = Task(
-                    title = event_data["content"]
-                    due = event_data["due"]["date"]
-                    priority = TaskPriority.P3
+                    title = event_data["content"],
+                    due = event_data["due"]["date"],
+                    priority = TaskPriority.P3,
             )
 
             task.durration = 0.5 #will change this to be set dynamically with the AI interpriteation
