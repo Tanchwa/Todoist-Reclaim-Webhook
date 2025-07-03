@@ -60,7 +60,7 @@ def accept_webhook_request():
             if event_data["labels"][0] == "reclaim":
                 
                 task.event_color = EventColor.LAVENDER
-                task.time_scheme_id = Hours.list()[0].id ## should be working hours
+                task.time_scheme_id = Hours.list()[2].id ## should be working hours
                 task.save()
             elif event_data["labels"][0] == "reclaim_personal":
                 task.event_color = EventColor.TANGERINE
@@ -72,10 +72,15 @@ def accept_webhook_request():
                 task.save()
                 
 
-            task.up_next
+            task.up_next = True
             task.save()
 
             task.start()
+
+            task.mark_incomplete()
+
+            all_tasks = Task.list()
+            print(all_tasks)
 
         except RecordNotFound as e:
             print(f"Record not found: {e}")
