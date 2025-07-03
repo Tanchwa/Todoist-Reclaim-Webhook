@@ -3,6 +3,7 @@ import hashlib
 import hmac
 import base64
 import os
+from recliam_sdk.client import ReclaimClient
 from reclaim_sdk.resources.task import Task, TaskPriority, EventColor
 from reclaim_sdk.resources.hours import Hours
 from reclaim_sdk.exceptions import (
@@ -58,7 +59,7 @@ def check_sha256sum():
             elif event_data["labels"][0] == "reclaim_personal":
                 task.event_color = EventColor.TANGERINE
                 task.time_scheme_id = Hours.list()[1].id ## should be personal hours
-            else 
+            else:
                 pass
 
         except RecordNotFound as e:
