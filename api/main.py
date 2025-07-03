@@ -29,7 +29,7 @@ def accept_webhook_request():
     digest = hmac.new(todoist_key, request_body, digestmod=hashlib.sha256).digest()
     signature = base64.b64encode(digest).decode()
 
-    if not hmac.compare_digest(sha256sum_header, signature)
+    if not hmac.compare_digest(sha256sum_header, signature):
         abort(401, description="Unable to verify integrity of incomming request")
 
     else:
