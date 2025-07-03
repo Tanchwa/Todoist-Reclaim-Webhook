@@ -44,7 +44,7 @@ def check_sha256sum():
         try:
             task = Task(
                     title = event_data["content"],
-                    due = reclaim_due_date
+                    due = reclaim_due_date,
                     priority = TaskPriority.P3,
             )
 
