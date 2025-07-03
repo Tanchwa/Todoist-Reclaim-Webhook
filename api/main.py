@@ -22,7 +22,6 @@ reclaim_key = os.environ.get("RECLAIM_KEY")
 ReclaimClient.configure(token=reclaim_key)
 
 @app.route('/webhook', methods=['POST'])
-def check_sha256sum():
     sha256sum_header = request.headers.get('X-Todoist-Hmac-SHA256')
 
     request_body = request.data
