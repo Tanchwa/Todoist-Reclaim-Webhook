@@ -3,6 +3,7 @@ import hashlib
 import hmac
 import base64
 import os
+from datetime import datetime
 from reclaim_sdk.client import ReclaimClient
 from reclaim_sdk.resources.task import Task, TaskPriority, EventColor
 from reclaim_sdk.resources.hours import Hours
@@ -36,10 +37,14 @@ def check_sha256sum():
         print(todoist_task)
 
         event_data = todoist_task["event_data"]
+
+        todoist_due_date = event_data["due"]["date"]
+        arg1,arg2,arg3 = map(int, todoist_due_date.split("-"))
+        reclaim_due_date = datetime(arg1,arg2,arg3)
         try:
             task = Task(
                     title = event_data["content"],
-                    due = event_data["due"]["date"],
+                    due = reclaim_due_date
                     priority = TaskPriority.P3,
             )
 
