@@ -3,10 +3,21 @@ import hashlib
 import hmac
 import base64
 import os
+from reclaim_sdk.resources.task import Task, TaskPriority, EventColor
+from reclaim_sdk.resources.hours import Hours
+from reclaim_sdk.exceptions import (
+    RecordNotFound,
+    InvalidRecord,
+    AuthenticationError,
+    ReclaimAPIError,
+)
 
 app = Flask(__name__)
 
 todoist_key = os.environ.get("TODOIST_KEY").encode()
+reclaim_key = os.environ.get("RECLAIM_KEY")
+
+ReclaimClient.configure(token=reclaim_key)
 
 @app.route('/webhook', methods=['POST'])
 def check_sha256sum():
@@ -20,5 +31,46 @@ def check_sha256sum():
         abort(401, description="Unable to verify integrity of incomming request")
 
     else:
-        print(request.json)
+        todoist_task = request.json
+        print(todoist_task)
+
+        event_data = todoist_task["event_data"]
+        try:
+            task = Task(
+                    title = event_data["content"]
+                    due = event_data["due"]["date"]
+                    priority = TaskPriority.P3
+            )
+
+            task.durration = 0.5 #will change this to be set dynamically with the AI interpriteation
+            task.max_work_duration = 1.5
+            task.min_work_duration = 0.5
+            task.save()
+
+            task.notes = f" Event Created By Tanchwa's Todoist: \n{event_data["url"]}"
+            task.event_color = EventColor.LAVENDER
+            task.save()
+
+            if event_data["labels"][0] == "reclaim":
+                
+                task.event_color = EventColor.LAVENDER
+                task.time_scheme_id = Hours.list()[0].id ## should be working hours
+            elif event_data["labels"][0] == "reclaim_personal":
+                task.event_color = EventColor.TANGERINE
+                task.time_scheme_id = Hours.list()[1].id ## should be personal hours
+            else 
+                pass
+
+        except RecordNotFound as e:
+            print(f"Record not found: {e}")
+        except InvalidRecord as e:
+            print(f"Invalid record: {e}")
+        except AuthenticationError as e:
+            print(f"Authentication error: {e}")
+        except ReclaimAPIError as e:
+            print(f"API error: {e}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+
         return Response(status=200)
