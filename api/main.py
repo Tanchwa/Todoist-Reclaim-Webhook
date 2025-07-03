@@ -56,11 +56,18 @@ def check_sha256sum():
                 
                 task.event_color = EventColor.LAVENDER
                 task.time_scheme_id = Hours.list()[0].id ## should be working hours
+                task.save()
             elif event_data["labels"][0] == "reclaim_personal":
                 task.event_color = EventColor.TANGERINE
                 task.time_scheme_id = Hours.list()[1].id ## should be personal hours
+                task.save()
             else:
                 pass
+
+            task.up_next
+            task.save()
+
+            task.start()
 
         except RecordNotFound as e:
             print(f"Record not found: {e}")
