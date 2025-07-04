@@ -8,9 +8,6 @@ import os
 app = Flask(__name__)
 
 todoist_key = os.environ.get("TODOIST_KEY").encode()
-reclaim_key = os.environ.get("RECLAIM_KEY")
-
-ReclaimClient.configure(token=reclaim_key)
 
 @app.route('/webhook', methods=['POST'])
 def accept_webhook_request():

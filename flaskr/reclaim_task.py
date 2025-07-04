@@ -9,6 +9,11 @@ from reclaim_sdk.exceptions import (
     ReclaimAPIError,
 )
 
+reclaim_key = os.environ.get("RECLAIM_KEY")
+
+ReclaimClient.configure(token=reclaim_key)
+
+
 def create(todoist_json_body):
     event_data = todoist_json_body["event_data"]
 
