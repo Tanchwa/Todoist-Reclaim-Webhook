@@ -24,7 +24,7 @@ def create(todoist_json_body):
     try:
         task = Task(
                 title = event_data["content"],
-                due = event_data["due"]["datatime"],
+                due = reclaim_due_date
                 priority = TaskPriority.P3,
         )
 
