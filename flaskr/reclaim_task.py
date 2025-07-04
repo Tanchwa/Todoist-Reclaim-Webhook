@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 from reclaim_sdk.client import ReclaimClient
 from reclaim_sdk.resources.task import Task, TaskPriority, EventColor
 from reclaim_sdk.resources.hours import Hours
