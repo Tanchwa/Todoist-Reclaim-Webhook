@@ -1,3 +1,5 @@
+from datetime import datetime
+
 def create(todoist_json_body):
     event_data = todoist_json_body["event_data"]
 
