@@ -1,4 +1,4 @@
-def create(todoist_json_body)
+def create(todoist_json_body):
     event_data = todoist_json_body["event_data"]
 
     todoist_due_date = event_data["due"]["date"]
@@ -44,6 +44,3 @@ def create(todoist_json_body)
         print(f"API error: {e}")
     except Exception as e:
         print(f"An error occurred: {e}")
-
-
-
