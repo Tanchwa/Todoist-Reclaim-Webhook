@@ -4,6 +4,8 @@ import hashlib
 import hmac
 import base64
 import os
+from reclaim_sdk.client import ReclaimClient
+from reclaim_sdk.resources.task import Task
 
 app = Flask(__name__)
 
@@ -25,5 +27,6 @@ def accept_webhook_request():
         print(todoist_task)
 
         reclaim_task.create(todoist_task)
+
 
         return Response(status=200)
