@@ -1,4 +1,4 @@
-import reclaim_task
+import flaskr.reclaim_task
 from flask import Flask, Response, request, jsonify, abort
 import hashlib
 import hmac
