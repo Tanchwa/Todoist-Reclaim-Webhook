@@ -1,4 +1,5 @@
 from datetime import datetime
+from dateutil import parser
 import os
 from reclaim_sdk.client import ReclaimClient
 from reclaim_sdk.resources.task import Task, TaskPriority, EventColor
@@ -19,12 +20,11 @@ def create(todoist_json_body):
     event_data = todoist_json_body["event_data"]
 
     todoist_due_date = event_data["due"]["date"]
-    arg1,arg2,arg3 = map(int, todoist_due_date.split("-"))
-    reclaim_due_date = datetime(arg1,arg2,arg3)
+    reclaim_due_date = parser.isoparse(todoist_due_date)
     try:
         task = Task(
                 title = event_data["content"],
-                due = reclaim_due_date
+                due = reclaim_due_date,
                 priority = TaskPriority.P3,
         )
 
