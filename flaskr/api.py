@@ -4,8 +4,6 @@ import hashlib
 import hmac
 import base64
 import os
-from reclaim_sdk.client import ReclaimClient
-from reclaim_sdk.resources.task import Task
 
 app = Flask(__name__)
 
@@ -26,7 +24,11 @@ def accept_webhook_request():
         todoist_task = request.json
         print(todoist_task)
 
-        reclaim_task.create(todoist_task)
-
+        event_name = todoist_task["event_name"]
+        
+        if event_name == "item:added":
+            reclaim_task.create(todoist_task)
+        elif event_name == "item:completed":
+            reclaim_task.complete(todoist_task)
 
         return Response(status=200)
