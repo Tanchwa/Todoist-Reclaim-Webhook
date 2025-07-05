@@ -24,7 +24,7 @@ def complete(todoist_json_body):
         )
 
         for existing_task in Task.list():
-            if event_data["url"] in task.notes:
+            if event_data["url"] in existing_task.notes:
                 task.id = existing_task.id
                 break
 
