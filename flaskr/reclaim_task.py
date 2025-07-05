@@ -19,9 +19,7 @@ def complete(todoist_json_body):
     event_data = todoist_json_body["event_data"]
 
     try:
-        task = Task(
-                title = event_data["content"],
-        )
+        task = Task()
 
         for existing_task in Task.list():
             if event_data["url"] in existing_task.notes:
