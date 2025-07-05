@@ -17,10 +17,16 @@ ReclaimClient.configure(token=reclaim_key)
 
 def complete(todoist_json_body):
     event_data = todoist_json_body["event_data"]
+
     try:
         task = Task(
                 title = event_data["content"],
         )
+
+        for existing_task in Task.list():
+            if event_data["url"] in task.notes:
+                task.id = existing_task.id
+                break
 
         task.mark_complete()
 
