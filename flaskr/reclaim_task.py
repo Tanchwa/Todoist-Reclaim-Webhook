@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil import parser
 import os
 from reclaim_sdk.client import ReclaimClient
@@ -42,8 +42,14 @@ def complete(todoist_json_body):
 def create(todoist_json_body):
     event_data = todoist_json_body["event_data"]
 
-    todoist_due_date = event_data["due"]["date"]
+    due = event_data.get("due")
+    todoist_due_date = due.get("date") if due else event_data["added_at"]
+
     reclaim_due_date = parser.isoparse(todoist_due_date)
+
+    if not due:
+        reclaim_due_date += timedelta(days=1)
+
     try:
         task = Task(
                 title = event_data["content"],
