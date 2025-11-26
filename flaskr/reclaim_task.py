@@ -44,17 +44,26 @@ def create(todoist_json_body):
 
     due = event_data.get("due")
     todoist_due_date = due.get("date") if due else event_data["added_at"]
-
     reclaim_due_date = parser.isoparse(todoist_due_date)
 
     if not due:
         reclaim_due_date += timedelta(days=1)
 
+    priority_map = {
+        4: TaskPriority.P4,
+        3: TaskPriority.P3,
+        2: TaskPriority.P2,
+        1: TaskPriority.P1,
+    }
+
+    task_priority = event_data.get("priority")
+    task_priority = priority_map.get(task_priority, TaskPriority.P3)
+
     try:
         task = Task(
                 title = event_data["content"],
                 due = reclaim_due_date,
-                priority = TaskPriority.P3,
+                priority = task_priority,
         )
 
         task.notes              = (
