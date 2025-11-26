@@ -50,10 +50,10 @@ def create(todoist_json_body):
         reclaim_due_date += timedelta(days=1)
 
     priority_map = {
-        4: TaskPriority.P4,
-        3: TaskPriority.P3,
-        2: TaskPriority.P2,
-        1: TaskPriority.P1,
+        4: TaskPriority.P1,
+        3: TaskPriority.P2,
+        2: TaskPriority.P3,
+        1: TaskPriority.P4,
     }
 
     task_priority = event_data.get("priority")
