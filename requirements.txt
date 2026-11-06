@@ -1,2 +1,6 @@
-flask
-reclaim-sdk
+# Pinned deliberately. reclaim-sdk 0.7.0 (2026-04-21) renamed TaskPriority to
+# PriorityLevel, which breaks reclaim_task.py at import. 0.6.4 is the version
+# in the published image that is known to run. Moving to 0.9.x is a real
+# migration, not a version bump: the task/hours API changed around it too.
+flask==3.1.2
+reclaim-sdk==0.6.4

@@ -9,6 +9,11 @@ app = Flask(__name__)
 
 todoist_key = os.environ.get("TODOIST_KEY").encode()
 
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify(status="ok"), 200
+
+
 @app.route('/webhook', methods=['POST'])
 def accept_webhook_request():
     sha256sum_header = request.headers.get('X-Todoist-Hmac-SHA256')
