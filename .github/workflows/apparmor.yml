@@ -1,0 +1,81 @@
+# Regenerates the AppArmor profile for this service and opens a PR with it.
+#
+# The profile is learned by actually running the container: the webhook is
+# started under a complain-mode profile, driven over HTTP, and everything it
+# touches is recorded. See Tanchwa/apparmor-profile-action for the mechanics.
+
+name: AppArmor profile
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'flaskr/**'
+      - 'Dockerfile'
+      - 'requirements.txt'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  apparmor:
+    uses: Tanchwa/apparmor-profile-action/.github/workflows/apparmor-profile.yml@v1
+    with:
+      name: todoist-reclaim-webhook
+      target: docker
+      profile_path: apparmor.d/todoist-reclaim-webhook
+
+      # Pin the generator scripts to the same tag this workflow is called at,
+      # so the logic and the scripts can never drift apart.
+      action_ref: v1
+
+      docker_image: todoist-reclaim-webhook:aa-learn
+      docker_build: true
+      docker_ports: |
+        5000:5000
+
+      # api.py calls .encode() on TODOIST_KEY at import, so the process does
+      # not start without it. These are throwaway values chosen to match the
+      # signature below; they cannot reach a real Todoist or Reclaim account.
+      # Never put production keys here -- workflow inputs are not registered
+      # for log masking the way secrets are.
+      docker_env: |
+        TODOIST_KEY=aa-learn-dummy-key
+        RECLAIM_KEY=aa-learn-dummy
+
+      detach: true
+      ready_url: http://localhost:5000/health
+      ready_expect_status: '200'
+      ready_timeout: 60
+
+      # Single-line scalar on purpose: a `|` block would append a newline and
+      # change the bytes the HMAC below is computed over, turning the POST
+      # into a 401.
+      probe_body: '{"event_name":"item:added","event_data":{"content":"aa-learn probe","url":"https://todoist.com/showTask?id=0","priority":1,"added_at":"2026-01-01T00:00:00.000000Z","due":null,"duration":null}}'
+
+      # base64(hmac_sha256(TODOIST_KEY, probe_body)) for the dummy key above.
+      # Fixed key + fixed body = fixed signature, so no secret is needed to
+      # exercise the authenticated path.
+      probe_headers: |
+        X-Todoist-Hmac-SHA256: 23GIbkMWFyJtm15NxlBAa+iKUruLiBppFX37mAhJwjk=
+        Content-Type: application/json
+
+      probe_urls: |
+        http://localhost:5000/health
+        GET 405 http://localhost:5000/webhook
+        POST http://localhost:5000/webhook
+
+      # The accepted POST reaches the Reclaim SDK, which opens a TLS
+      # connection before failing auth. Dwell so that DNS, certificate and
+      # socket activity lands in the profile instead of being cut off.
+      dwell_seconds: 5
+
+      # First run: start in complain mode. The profile logs what it would have
+      # blocked instead of blocking it, so a missed code path shows up in the
+      # journal rather than as an outage. Switch to enforce once a cycle has
+      # passed with no surprises.
+      mode: complain
+
+      labels: apparmor,security
