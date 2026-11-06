@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   apparmor:
-    uses: Tanchwa/apparmor-profile-action/.github/workflows/apparmor-profile.yml@v1
+    uses: Tanchwa/apparmor-profile-action/.github/workflows/apparmor-profile.yml@v1.1
     with:
       name: todoist-reclaim-webhook
       target: docker
@@ -29,7 +29,7 @@ jobs:
 
       # Pin the generator scripts to the same tag this workflow is called at,
       # so the logic and the scripts can never drift apart.
-      action_ref: v1
+      action_ref: v1.1
 
       docker_image: todoist-reclaim-webhook:aa-learn
       docker_build: true
